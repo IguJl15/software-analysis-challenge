@@ -11,7 +11,7 @@ using VendasSystem.Data;
 
 namespace VendasSystem.Migrations
 {
-    [DbContext(typeof(Data.DbContext))]
+    [DbContext(typeof(Data.AppDbContext))]
     [Migration("20221229203724_Initial")]
     partial class Initial
     {

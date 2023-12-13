@@ -6,12 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<VendasSystem.Data.DbContext>(options =>
+builder.Services.AddDbContext<VendasSystem.Data.AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<VendasSystem.Data.DbContext>();
+    .AddEntityFrameworkStores<VendasSystem.Data.AppDbContext>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

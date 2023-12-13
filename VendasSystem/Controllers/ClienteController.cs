@@ -12,9 +12,9 @@ namespace VendasSystem.Controllers.ClienteController.cs
 {
     public class ClienteController : Controller
     {
-        private readonly Data.DbContext _context;
+        private readonly Data.AppDbContext _context;
 
-        public ClienteController(Data.DbContext context)
+        public ClienteController(Data.AppDbContext context)
         {
             _context = context;
         }

@@ -4,9 +4,9 @@ using VendasSystem.Models;
 
 namespace VendasSystem.Data;
 
-public class DbContext : IdentityDbContext
+public class AppDbContext : IdentityDbContext
 {
-    public DbContext(DbContextOptions<DbContext> options)
+    public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
     }

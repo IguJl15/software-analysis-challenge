@@ -7,9 +7,9 @@ namespace VendasSystem.Controllers
 {
     public class MarcaController : Controller
     {
-        private readonly Data.DbContext _context;
+        private readonly Data.AppDbContext _context;
 
-        public MarcaController(Data.DbContext context)
+        public MarcaController(Data.AppDbContext context)
         {
             _context = context;
         }

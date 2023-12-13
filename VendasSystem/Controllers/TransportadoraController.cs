@@ -12,9 +12,9 @@ namespace VendasSystem.Controllers
 {
     public class TransportadoraController : Controller
     {
-        private readonly Data.DbContext _context;
+        private readonly Data.AppDbContext _context;
 
-        public TransportadoraController(Data.DbContext context)
+        public TransportadoraController(Data.AppDbContext context)
         {
             _context = context;
         }

@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VendasSystem.Data;
 using VendasSystem.Models;
+using VendasSystem.ViewModels;
 
 namespace VendasSystem.Controllers
 {
     public class ProdutoController : Controller
     {
-        private readonly Data.DbContext _context;
+        private readonly Data.AppDbContext _context;
 
-        public ProdutoController(Data.DbContext context)
+        public ProdutoController(Data.AppDbContext context)
         {
             _context = context;
         }
