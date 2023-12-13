@@ -23,7 +23,7 @@ namespace VendasSystem.Controllers
         // GET: Produto
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Produtos.ToListAsync());
+            return View(await _context.Produtos.Include(p => p.Marca).ToListAsync());
         }
 
         // GET: Produto/Details/5
@@ -45,9 +45,13 @@ namespace VendasSystem.Controllers
         }
 
         // GET: Produto/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var viewModel = new ProdutoCreateEdit()
+            {
+                MarcasDisponiveis = await _context.Marcas.ToListAsync()
+            };
+            return View(viewModel);
         }
 
         // POST: Produto/Create
@@ -55,7 +59,7 @@ namespace VendasSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco")] Produto produto)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,Marca")] ProdutoCreateEdit produto)
         {
             if (ModelState.IsValid)
             {
@@ -75,11 +79,24 @@ namespace VendasSystem.Controllers
             }
 
             var produto = await _context.Produtos.FindAsync(id);
+
+
             if (produto == null)
             {
                 return NotFound();
             }
-            return View(produto);
+
+            var viewModel = new ProdutoCreateEdit()
+            {
+                MarcasDisponiveis = await _context.Marcas.ToListAsync(),
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Descricao = produto.Descricao,
+                Marca = produto.Marca,
+                Preco = produto.Preco,
+            };
+
+            return View(viewModel);
         }
 
         // POST: Produto/Edit/5
@@ -87,7 +104,7 @@ namespace VendasSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Preco")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Preco,Marca")] ProdutoCreateEdit produto)
         {
             if (id != produto.Id)
             {
