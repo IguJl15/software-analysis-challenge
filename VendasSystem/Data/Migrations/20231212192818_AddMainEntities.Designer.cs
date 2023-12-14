@@ -3,9 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using VendasSystem.Data;
 
 #nullable disable
 
@@ -304,6 +301,9 @@ namespace VendasSystem.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("Data")
                         .HasColumnType("timestamp with time zone");
 
@@ -314,6 +314,8 @@ namespace VendasSystem.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
 
                     b.HasIndex("TransportadoraId");
 
@@ -471,7 +473,7 @@ namespace VendasSystem.Migrations
             modelBuilder.Entity("VendasSystem.Models.Item", b =>
                 {
                     b.HasOne("VendasSystem.Models.NotaDeVenda", "NotaDeVenda")
-                        .WithMany("Itens")
+                        .WithMany()
                         .HasForeignKey("NotaDeVendaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -489,6 +491,12 @@ namespace VendasSystem.Migrations
 
             modelBuilder.Entity("VendasSystem.Models.NotaDeVenda", b =>
                 {
+                    b.HasOne("VendasSystem.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("VendasSystem.Models.Transportadora", "Transportadora")
                         .WithMany()
                         .HasForeignKey("TransportadoraId")
@@ -500,6 +508,8 @@ namespace VendasSystem.Migrations
                         .HasForeignKey("VendedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cliente");
 
                     b.Navigation("Transportadora");
 
@@ -515,7 +525,7 @@ namespace VendasSystem.Migrations
                         .IsRequired();
 
                     b.HasOne("VendasSystem.Models.NotaDeVenda", "NotaDeVenda")
-                        .WithMany("Pagamentos")
+                        .WithMany()
                         .HasForeignKey("NotaDeVendaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -534,13 +544,6 @@ namespace VendasSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("Marca");
-                });
-
-            modelBuilder.Entity("VendasSystem.Models.NotaDeVenda", b =>
-                {
-                    b.Navigation("Itens");
-
-                    b.Navigation("Pagamentos");
                 });
 #pragma warning restore 612, 618
         }

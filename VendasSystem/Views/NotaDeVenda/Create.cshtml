@@ -1,0 +1,68 @@
+@model VendasSystem.ViewModels.VendaCreateEdit
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@functions {
+    public void AddItemToItemsList()
+    {
+        @* Model.Venda.Itens.Add(item); *@
+    }
+}
+
+<h1>Create</h1>
+
+<h4>NotaDeVenda</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Venda.Data" class="control-label"></label>
+                <input type="date" asp-for="Venda.Data" class="form-control" />
+                <span asp-validation-for="Venda.Data" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Venda.Cliente" class="control-label"></label>
+                <select asp-for="Venda.ClienteId" class="form-control" asp-items="Model.ClientesDisponiveis"></select>
+                <span asp-validation-for="Venda.ClienteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Venda.Vendedor" class="control-label"></label>
+                <select asp-for="Venda.VendedorId" class="form-control"
+                    asp-items="Model.VendedoresDisponiveis"></select>
+                <span asp-validation-for="Venda.VendedorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Venda.Transportadora" class="control-label"></label>
+                <select asp-for="Venda.TransportadoraId" class="form-control"
+                    asp-items="Model.TransportadorasDisponiveis"></select>
+                <span asp-validation-for="Venda.TransportadoraId" class="text-danger"></span>
+            </div>
+            <br>
+            <h5>Produtos</h5>
+            <div>
+                @if (Model.Venda.Itens.Count == 0)
+                {
+                    <p>Nenhum item adicionado</p>
+                }
+                <ul>
+                    @foreach (var item in Model.Venda.Itens)
+                    {
+                        <li>@item.Produto.Nome</li>
+                    }
+                </ul>
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

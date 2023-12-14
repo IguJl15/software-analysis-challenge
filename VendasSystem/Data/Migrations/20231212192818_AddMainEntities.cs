@@ -95,12 +95,19 @@ namespace VendasSystem.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Data = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ClienteId = table.Column<int>(type: "integer", nullable: false),
                     VendedorId = table.Column<int>(type: "integer", nullable: false),
                     TransportadoraId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_NotasDeVenda", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NotasDeVenda_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_NotasDeVenda_Transportadoras_TransportadoraId",
                         column: x => x.TransportadoraId,
@@ -181,6 +188,11 @@ namespace VendasSystem.Migrations
                 name: "IX_Itens_ProdutoId",
                 table: "Itens",
                 column: "ProdutoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotasDeVenda_ClienteId",
+                table: "NotasDeVenda",
+                column: "ClienteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotasDeVenda_TransportadoraId",
