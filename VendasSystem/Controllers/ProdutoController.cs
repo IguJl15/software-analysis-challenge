@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VendasSystem.Data;
@@ -49,7 +50,13 @@ namespace VendasSystem.Controllers
         {
             var viewModel = new ProdutoCreateEdit()
             {
-                MarcasDisponiveis = await _context.Marcas.ToListAsync()
+                MarcasDisponiveis = [.. _context.Marcas.Select(
+                    marca => new SelectListItem()
+                    {
+                        Value = marca.Id.ToString(),
+                        Text = marca.Nome
+                    }
+                )]
             };
             return View(viewModel);
         }
@@ -59,8 +66,9 @@ namespace VendasSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,Marca")] ProdutoCreateEdit produto)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Preco,MarcaId")] ProdutoCreateEdit produto)
         {
+            ModelState["Marca"]!.ValidationState = ModelValidationState.Valid;
             if (ModelState.IsValid)
             {
                 _context.Add(produto);
@@ -73,28 +81,32 @@ namespace VendasSystem.Controllers
         // GET: Produto/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) { return NotFound(); }
 
-            var produto = await _context.Produtos.FindAsync(id);
+            var produto = await _context.Produtos.Include(p => p.Marca).SingleAsync(p => p.Id == id);
 
-
-            if (produto == null)
-            {
-                return NotFound();
-            }
+            if (produto == null) { return NotFound(); }
 
             var viewModel = new ProdutoCreateEdit()
             {
-                MarcasDisponiveis = await _context.Marcas.ToListAsync(),
+                MarcasDisponiveis = [.. _context.Marcas.Select(
+                    marca => new SelectListItem()
+                    {
+                        Value = marca.Id.ToString(),
+                        Text = marca.Nome,
+                        Selected = marca.Id == produto.MarcaId,
+                    }
+                )],
+
                 Id = produto.Id,
                 Nome = produto.Nome,
                 Descricao = produto.Descricao,
                 Marca = produto.Marca,
+                MarcaId = produto.Marca.Id,
                 Preco = produto.Preco,
             };
+
+            System.Console.WriteLine(produto.Marca.Id);
 
             return View(viewModel);
         }
@@ -104,12 +116,11 @@ namespace VendasSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Preco,Marca")] ProdutoCreateEdit produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Preco,MarcaId")] ProdutoCreateEdit produto)
         {
-            if (id != produto.Id)
-            {
-                return NotFound();
-            }
+            if (id != produto.Id) return NotFound();
+
+            ModelState["Marca"]!.ValidationState = ModelValidationState.Valid;
 
             if (ModelState.IsValid)
             {
@@ -131,6 +142,7 @@ namespace VendasSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(produto);
         }
 

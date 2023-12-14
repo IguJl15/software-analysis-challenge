@@ -1,24 +1,11 @@
 
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NuGet.Protocol.Plugins;
 using VendasSystem.Models;
 
 namespace VendasSystem.ViewModels;
 
 public class ProdutoCreateEdit : Produto
 {
-    public List<Marca> MarcasDisponiveis = [];
-
-    public List<SelectListItem> MarcasItems
-    {
-        get
-        {
-            return MarcasDisponiveis.Select(
-            (m) => new SelectListItem
-            {
-                Text = m.Nome,
-                Value = m.Id.ToString()
-            }
-        ).ToList();
-        }
-    }
+    public List<SelectListItem> MarcasDisponiveis = [];
 }
